@@ -1,0 +1,34 @@
+SURICATA
+# Selanjutnya kita akan menginstall suricata, pertama ketik perintah untuk menginstall EPEL (Extra Packages for Enterprise Linux), yang menyediakan paket tambahan untuk sistem operasi berbasis RPM, seperti CentOS. dengan perintah
+yum install epel-release
+# lalu kita akan menginstall plugin yang memungkinkan pengguna untuk menginstal dan mengelola paket dari repositori Copr (Cool Other Package Repo) pada sistem operasi CentOS. dengan perintah
+yum-plugin-copr
+# lalu untuk mengaktifkan repository Suricata 6.0 dari OISF pada sistem CentOS/RHEL ketikkan perintah
+yum copr enable @oisf/suricata-6.0
+# setelah diaktihkan langsung kita install saja suricata 6.0 dengan perintah
+yum install suricata
+# kita cek terlebih dahulu versi suricata 6.0 apakah sudah sesuai dengan yang kita install tadi dengan perintah
+suricata -v
+# tambahkan rule pada suricata untuk defend sql injection
+# untuk menambahkan Buka file konfigurasi Suricata yang berada di /etc/suricata/suricata.yaml dengan editor teks dengan perintah
+nano /etc/suricata/suricata.yaml
+# Cari dan uncomment baris default-rule-path dan ubah nilainya menjadi /etc/suricata/rules.
+# Cari dan uncomment baris rule-files yang berkaitan dengan SQL injection, misalnya # - sql-injection.rules. Pastikan baris tersebut tidak di-comment lagi.
+# Buka file sql-injection.rules yang terletak di /etc/suricata/rules. Jika file tersebut tidak ada, Anda dapat mendownloadnya dari situs resmi Suricata.
+# tambahkan pada rules suricata.yaml sebagai berikut untuk mendefend serangan sql injection 
+alert http $EXTERNAL_NET any -> $HTTP_SERVERS any (msg:"SQL injection attempt"; content:"SELECT"; http_uri; nocase; threshold: type limit, track by_src, seconds 60, count 5; sid:1000001; rev:1;)
+# Rule tersebut akan memberikan alert ketika ada percobaan SQL injection pada server.
+# Simpan perubahan dan restart Suricata untuk mengaktifkan rule baru dengan perintah
+systemctl restart suricata
+# jika terdapat kesalahan seperti
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Warning> - [ERRCODE: SC_ERR_SYSCALL(50)] - Failure when trying to get MTU via ioctl for 'eth0': No such device (19)
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Warning> - [ERRCODE: SC_ERR_NO_RULES(42)] - No rule files match the pattern /etc/suricata/rules/sql.rules
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Error> - [ERRCODE: SC_ERR_AFP_CREATE(190)] - Unable to find type for iface "eth0": No such device
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Notice> - all 1 packet processing threads, 4 management threads initialized, engine started.
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Error> - [ERRCODE: SC_ERR_AFP_CREATE(190)] - Unable to find iface eth0: No such device
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Error> - [ERRCODE: SC_ERR_AFP_CREATE(190)] - Couldn't init AF_PACKET socket, fatal error
+May 04 03:32:34 localhost.localdomain suricata[3861]: 4/5/2023 -- 03:32:34 - <Error> - [ERRCODE: SC_ERR_FATAL(171)] - thread W#01-eth0 failed
+# itu artinya kita belum mengganti network interface suricata untuk mengganti interface kita ubah dengan perintah
+nano /etc/sysconfig/suricata
+# sesuaikan eth0 dengan network interface yang kita gunakan seperti enp0s3
+
