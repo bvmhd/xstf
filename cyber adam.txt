@@ -1,0 +1,78 @@
+# menambahkan mod_header pada centos7
+#- Strict-Transport-Security pada Apache
+#- Patching X-Frame-Options pada Apache
+#- Patching X-Content-Type-Options pada Apache
+#- Patching Referrer-Policy pada Apache
+#- Patching Permissions-Policy pada Apache
+#- Patching Content-Security-Policy (CSP) pada Apache 
+
+sudo nano /etc/httpd/conf/httpd.conf
+# perintah untuk mengubah file “httpd.conf”
+Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+# moduled yang digunakan untuk mengontrol keamanan lalulintas HTTPS pada sebuah web.
+Header always set X-Frame-Options "SAMEORIGIN"
+# module yang digunakan untuk mengontrol tampilan halaman web dalam sebuah frame atau iframe.
+Header always set X-Content-Type-Options "nosniff"
+# module yang digunakan untuk menentukan tipe konten suatu halaman web .
+Header always set Referrer-Policy "no-referrer-when-downgrade"
+# module yang digunakan untuk mengatur bagaimana browser harus mengirimkan informasi ketika pengguna mengklik tautan di halaman web.
+Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+# module yang digunakan untuk mengatur kebijakan izin browser pada server.
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self'"
+# module yang digunakan untuk mengontrol sumberdaya untuk dimuat didalam halaman web.
+
+# melakukan cek header web pada CentOs 7
+curl -I example.com
+# menampilkan header web
+
+curl –I example.com/page1
+#melakukan cek header dari halaman web tertentu
+
+
+# hardening document host information centos7
+yum update
+# untuk mengupdate centos7
+systemctl stop #<nama_layanan>
+systemctl disable #<nama_layanan>
+# untuk mematikan sebuah layanan
+# Contoh : systemctl disable sendmail dan systemctl stop sendmail
+echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+sysctl –p
+# perintah untuk mematikan layanan IPv6 (kalau tidak diperlukan)
+password requisite pam_cracklib.so try_first_pass retry=3 minlen=8 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1
+# Untuk menambahkan kompleksitas password
+password requisite pam_pwquality.so try_first_pass retry=3 minlen=12 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1 enforce_for_root
+# Untuk menetapkan kebijakan password yang kuat
+systemctl enable firewalld
+systemctl start firewalld
+# Mengaktifkan firewall
+
+# Contoh menetapkan aturan firewall yang tepat 
+firewall-cmd --permanent --add-service=ssh
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.1.0/24" port port="22" protocol="tcp" accept'
+firewall-cmd –reload
+ 
+yum update
+# Memperbarui semua paket software yang telah terinstal
+yum autoremove
+# Menghapus paket software yang tidak diperlukan
+echo "DebianBanner no" >> /etc/ssh/sshd_config
+echo "Banner none" >> /etc/ssh/sshd_config
+# Menyembunyikan informasi rilis pada SSH
+echo "AllowUsers <username>@<ip_address>" >> /etc/ssh/sshd_config
+# Mengizinkan akses SSH hanya dari IP tertentu
+echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+# Menghindari login root melalui SSH
+echo "Protocol 2" >> /etc/ssh/sshd_config
+# Menetapkan protokol SSH yang aman
+echo "ClientAliveInterval 300" >> /etc/ssh/sshd_config
+echo "ClientAliveCountMax 0" >> /etc/ssh/sshd_config
+# Menetapkan waktu sesi SSH
+echo "PubkeyAuthentication yes" >> /etc
+# Menetapkan ukuran kunci minimal pada SSH
+
+# hardening
+

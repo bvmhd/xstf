@@ -1,0 +1,33 @@
+# install perintah wget untuk mengunduh skrip openvpn dengan command
+yum install wget
+# unduh skrip openvpn yang akan di install pada server dengan perintah 
+wget https://git.io/vpn -O openvpn-install.sh
+# beri izin .exe openvpn yang telah diunduh dengan perintah
+chmod +x openvpn-install.sh
+# setelah proses unduh, selanjutnya kita jalankan openvpn dengan menggunakan perintah bash
+:/openvpn-install.sh
+# pada saat penginstalan kita akan dipilih untuk membangun koneksi vpn, biasanya kita diberi 2 pilihan yang pertama
+# UDP (User Datagram Protocol)
+# UDP adalah protokol yang cepat, ringan, dan tidak terlalu kompleks. Dalam konteks OpenVPN, penggunaan UDP dapat mempercepat koneksi VPN karena tidak memerlukan pengiriman ulang paket data yang # hilang atau korupsi seperti pada TCP.
+# TCP (Transmission Control Protocol)
+# TCP adalah protokol yang lebih stabil, andal, dan cenderung lebih lambat dibandingkan dengan UDP. Dalam konteks OpenVPN, penggunaan TCP dapat menjamin keamanan koneksi VPN karena paket data akan # selalu dikirim ulang hingga sampai ke tujuan dengan sempurna
+# Dalam kesimpulannya, penggunaan UDP atau TCP pada OpenVPN tergantung pada kebutuhan dan kondisi koneksi masing-masing. Jika Anda memerlukan koneksi yang cepat, maka penggunaan UDP # direkomendasikan. Namun, jika kita memerlukan koneksi yang stabil dan aman, maka penggunaan TCP lebih direkomendasikan. disini saya memilih protokol UDP
+# kemudian biasanya kita disuruh untuk memilih port yang akan digunakan pada openvpn. Port yang umumnya digunakan untuk OpenVPN adalah port 1194, namun port ini dapat diganti sesuai dengan #kebutuhan dan preferensi kita. pemilihan port yang tepat adalah hal penting untuk menjaga keamanan server OpenVPN dan untuk meminimalisir kemungkinan terjadinya serangan oleh pihak yang tidak bertanggung jawab.
+# DNS server pada OpenVPN digunakan untuk menentukan server DNS mana yang akan digunakan oleh klien OpenVPN. DNS server ini bertugas untuk menerjemahkan alamat IP menjadi nama domain kita, sehingga klien OpenVPN dapat mengakses situs atau layanan yang diinginkan dengan mudah. disini saya memilih dns server dari google.
+# Terakhir biasanya kita disuruh untuk memilih nama client yang akan digunakan, disini kita bebas untuk memberi nama client openvpn
+# Setelah instalasi selesai, Anda dapat membuat konfigurasi OpenVPN dan mengunduh kunci klien. cara saya mengunduh nya adalah dengan mengcopy semua file skrip client ke webserver yang kita gunakan, 
+untuk itu kita install terlebih dahulu web server apache yang akan saya gunakan dengan perintah
+sudo yum install httpd
+# jangan lupa untuk mulai service apache yang telah diinstal dengan menggunakan perintah
+systemctl start httpd
+# ketika kita menggunakan web server kita harus terlebih dahulu menambahkan service http, https pada firewall-cmd dengan menggunakan perintah 
+sudo firewall-cmd --permanent --add-service-http
+sudo firewall-cmd --permanent --add-service-https
+sudo firewall-cmd --reload
+# berikut adalh penjelasan untuk perintah yang kita jalankan 
+firewall-cmd: perintah untuk mengkonfigurasi firewall di CentOS/RHEL
+--permanent: menambahkan aturan firewall secara permanen ke konfigurasi firewall
+--add-service-http: membuka akses pada port 80 (HTTP)
+--add-service-https: membuka akses pada port 443 (HTTPS)
+# setelah kita menginstal web server apache saya copy file client yang telah diberitahu oleh system install openvpn ke /var/www/html dimana itu adalah direktori untuk kostumisasi web server apache
+# setelah itu kita import key client pada aplikasi openvpn connect for windows
