@@ -1,0 +1,5 @@
+https://www.google.com/amp/s/www.geeksforgeeks.org/shcheck-tool-to-check-security-headers-in-kali-linux/amp/
+https://devpress.csdn.net/centos/62e7a57ca254c06d462e2da7.html
+https://www.hackingarticles.in/detect-sql-injection-attack-using-snort-ids/
+https://www.krisnawanto777.com/2020/09/cara-install-dhcp-server-di-centos-7.html?m=1
+https://satpam-jaringan.netlify.app/
